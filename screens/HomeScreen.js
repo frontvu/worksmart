@@ -13,74 +13,75 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { TabView, SceneMap } from "react-native-tab-view";
-import { SafeAreaView } from 'react-navigation';
+import { SafeAreaView } from "react-navigation";
 import { MonoText } from "../components/StyledText";
-
 
 const recommendations = [
   {
-    id: '1234',
+    id: "1234",
     location: {
-      latitude:43.6475052,
-      longitude: -79.3975761,
+      latitude: 43.6475052,
+      longitude: -79.3975761
     },
-    address: '129 Spadina Ave, Toronto, On',
-    title: 'IT Service',
-    description: 'Cisco router no longer works. Please replace',
-    budget: 500.00,
-    dateTime: '',
-    dateCreated: '',
-    dateAssigned: '',
+    address: "129 Spadina Ave, Toronto, On",
+    title: "IT Service",
+    description: "Cisco router no longer works. Please replace",
+    budget: 500.0,
+    dateStarTime: "",
+    dateCreated: "",
+    dateAssigned: ""
   },
   {
-    id: '1235',
+    id: "1235",
     location: {
       latitude: 43.6465263,
-      longitude: -79.4604926,
+      longitude: -79.4604926
     },
-    address: '350 King St W, Toronto, ON M5V 3X5',
-    title: 'IT Service',
-    description: 'Cisco router no longer works. Please replace',
-    budget: 250.00,
-    dateTime: '',
-    dateCreated: '',
-    dateAssigned: '',
+    address: "350 King St W, Toronto, ON M5V 3X5",
+    title: "IT Service",
+    description: "Cisco router no longer works. Please replace",
+    budget: 250.0,
+    dateTime: "",
+    dateCreated: "",
+    dateAssigned: ""
   },
   {
-    id: '1236',
+    id: "1236",
     location: {
       latitude: 43.6585056,
-      longitude: -79.4282065,
+      longitude: -79.4282065
     },
-    address: '27 King\'s College Cir, Toronto, ON M5S',
-    title: 'IT Service',
-    description: 'Cisco router no longer works. Please replace',
-    budget: 320.00,
-    dateTime: '',
-    dateCreated: '',
-    dateAssigned: '',
+    address: "27 King's College Cir, Toronto, ON M5S",
+    title: "IT Service",
+    description: "Cisco router no longer works. Please replace",
+    budget: 320.0,
+    dateTime: "",
+    dateCreated: "",
+    dateAssigned: ""
   }
-]
+];
 
 const Recommendations = () => (
-  <MapView
-    style={styles.container}
-    initialRegion={{
-      latitude: 43.6465263,
-      longitude: -79.4282065,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421
-    }}
-  >
-  {recommendations.map(marker => (
-    <Marker
-      key={marker.id}
-      coordinate={marker.location}
-      title={marker.title}
-      description={marker.description}
-    />
-  ))}
-  </MapView>
+  <View>
+    <MapView
+      style={styles.container}
+      initialRegion={{
+        latitude: 43.6465263,
+        longitude: -79.4282065,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      }}
+    >
+      {recommendations.map(marker => (
+        <Marker
+          key={marker.id}
+          coordinate={marker.location}
+          title={marker.title}
+          description={marker.description}
+        />
+      ))}
+    </MapView>
+  </View>
 );
 
 const Blank = () => (
@@ -93,34 +94,44 @@ export default class HomeScreen extends React.Component {
   state = {
     index: 0,
     routes: [
-      { key: 'first', title: 'INVITED' },
-      { key: 'second', title: 'RECOMMENDED' },
-      { key: 'third', title: 'APPLIED' },
-      { key: 'forth', title: 'ASSIGNED' },
-    ],
+      { key: "first", title: "INVITED" },
+      { key: "second", title: "RECOMMENDED" },
+      { key: "third", title: "APPLIED" },
+      { key: "forth", title: "ASSIGNED" }
+    ]
   };
 
   render() {
     return (
-      <View style={[styles.container, { backgroundColor: 'orange' }]}>
-      <SafeAreaView  />
-      <View style={[styles.contentContainer, {backgroundColor: 'orange', flexDirection: 'row'}]}>
-        <Image style={{ width: 50, height: 50 }} resizeMode={'center'} source={require('../assets/images/wm-white-icon.png')} />
-        <View style={{ justifyContent:'center'}}><Text style={{ color: 'white', fontSize: 20}}>My Work</Text></View>
-      </View>
+      <View style={[styles.container, { backgroundColor: "orange" }]}>
+        <SafeAreaView />
+        <View
+          style={[
+            styles.contentContainer,
+            { backgroundColor: "orange", flexDirection: "row" }
+          ]}
+        >
+          <Image
+            style={{ width: 50, height: 50 }}
+            resizeMode={"center"}
+            source={require("../assets/images/wm-white-icon.png")}
+          />
+          <View style={{ justifyContent: "center" }}>
+            <Text style={{ color: "white", fontSize: 20 }}>My Work</Text>
+          </View>
+        </View>
         <TabView
           navigationState={this.state}
           renderScene={SceneMap({
             first: Recommendations,
             second: Blank,
             third: Blank,
-            forth: Blank,
+            forth: Blank
           })}
           onIndexChange={index => this.setState({ index })}
-          initialLayout={{ width: Dimensions.get('window').width }}
-          labelStyle={[styles.tabBarInfoText, {backgroundColor: 'orange'}]}
-          tabStyle={{backgroundColor: 'orange'}}
-          
+          initialLayout={{ width: Dimensions.get("window").width }}
+          labelStyle={[styles.tabBarInfoText, { backgroundColor: "orange" }]}
+          tabStyle={{ backgroundColor: "orange" }}
         />
       </View>
     );
@@ -128,10 +139,8 @@ export default class HomeScreen extends React.Component {
 }
 
 HomeScreen.navigationOptions = {
-  header: null,
+  header: null
 };
-
-
 
 const styles = StyleSheet.create({
   container: {
