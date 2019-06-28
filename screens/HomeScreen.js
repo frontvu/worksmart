@@ -1,5 +1,5 @@
-import * as WebBrowser from 'expo-web-browser';
-import React from 'react';
+import * as WebBrowser from "expo-web-browser";
+import React from "react";
 import {
   Image,
   Platform,
@@ -8,191 +8,216 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
+  Dimensions,
+  StatusBar
+} from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import { TabView, SceneMap } from "react-native-tab-view";
+import { SafeAreaView } from 'react-navigation';
+import { MonoText } from "../components/StyledText";
 
-import { MonoText } from '../components/StyledText';
 
-export default function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}>
-        <View style={styles.welcomeContainer}>
-          <Image
-            source={
-              __DEV__
-                ? require('../assets/images/robot-dev.png')
-                : require('../assets/images/robot-prod.png')
-            }
-            style={styles.welcomeImage}
-          />
-        </View>
+const recommendations = [
+  {
+    id: '1234',
+    location: {
+      latitude:43.6475052,
+      longitude: -79.3975761,
+    },
+    address: '129 Spadina Ave, Toronto, On',
+    title: 'IT Service',
+    description: 'Cisco router no longer works. Please replace',
+    budget: 500.00,
+    dateTime: '',
+    dateCreated: '',
+    dateAssigned: '',
+  },
+  {
+    id: '1235',
+    location: {
+      latitude: 43.6465263,
+      longitude: -79.4604926,
+    },
+    address: '350 King St W, Toronto, ON M5V 3X5',
+    title: 'IT Service',
+    description: 'Cisco router no longer works. Please replace',
+    budget: 250.00,
+    dateTime: '',
+    dateCreated: '',
+    dateAssigned: '',
+  },
+  {
+    id: '1236',
+    location: {
+      latitude: 43.6585056,
+      longitude: -79.4282065,
+    },
+    address: '27 King\'s College Cir, Toronto, ON M5S',
+    title: 'IT Service',
+    description: 'Cisco router no longer works. Please replace',
+    budget: 320.00,
+    dateTime: '',
+    dateCreated: '',
+    dateAssigned: '',
+  }
+]
 
-        <View style={styles.getStartedContainer}>
-          <DevelopmentModeNotice />
+const Recommendations = () => (
+  <MapView
+    style={styles.container}
+    initialRegion={{
+      latitude: 43.6465263,
+      longitude: -79.4282065,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421
+    }}
+  >
+  {recommendations.map(marker => (
+    <Marker
+      key={marker.id}
+      coordinate={marker.location}
+      title={marker.title}
+      description={marker.description}
+    />
+  ))}
+  </MapView>
+);
 
-          <Text style={styles.getStartedText}>Get started by opening</Text>
+const Blank = () => (
+  <View>
+    <Text>Blank</Text>
+  </View>
+);
 
-          <View
-            style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-            <MonoText>screens/HomeScreen.js</MonoText>
-          </View>
+export default class HomeScreen extends React.Component {
+  state = {
+    index: 0,
+    routes: [
+      { key: 'first', title: 'INVITED' },
+      { key: 'second', title: 'RECOMMENDED' },
+      { key: 'third', title: 'APPLIED' },
+      { key: 'forth', title: 'ASSIGNED' },
+    ],
+  };
 
-          <Text style={styles.getStartedText}>
-            Change this text and your app will automatically reload.
-          </Text>
-        </View>
-
-        <View style={styles.helpContainer}>
-          <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-            <Text style={styles.helpLinkText}>
-              Help, it didn’t automatically reload!
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-
-      <View style={styles.tabBarInfoContainer}>
-        <Text style={styles.tabBarInfoText}>
-          This is a tab bar. You can edit it in:
-        </Text>
-
-        <View
-          style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-          <MonoText style={styles.codeHighlightText}>
-            navigation/MainTabNavigator.js
-          </MonoText>
-        </View>
+  render() {
+    return (
+      <View style={[styles.container, { backgroundColor: 'orange' }]}>
+      <SafeAreaView  />
+      <View style={[styles.contentContainer, {backgroundColor: 'orange', flexDirection: 'row'}]}>
+        <Image style={{ width: 50, height: 50 }} resizeMode={'center'} source={require('../assets/images/wm-white-icon.png')} />
+        <View style={{ justifyContent:'center'}}><Text style={{ color: 'white', fontSize: 20}}>My Work</Text></View>
       </View>
-    </View>
-  );
+        <TabView
+          navigationState={this.state}
+          renderScene={SceneMap({
+            first: Recommendations,
+            second: Blank,
+            third: Blank,
+            forth: Blank,
+          })}
+          onIndexChange={index => this.setState({ index })}
+          initialLayout={{ width: Dimensions.get('window').width }}
+          labelStyle={[styles.tabBarInfoText, {backgroundColor: 'orange'}]}
+          tabStyle={{backgroundColor: 'orange'}}
+          
+        />
+      </View>
+    );
+  }
 }
 
 HomeScreen.navigationOptions = {
   header: null,
 };
 
-function DevelopmentModeNotice() {
-  if (__DEV__) {
-    const learnMoreButton = (
-      <Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
-        Learn more
-      </Text>
-    );
 
-    return (
-      <Text style={styles.developmentModeText}>
-        Development mode is enabled: your app will be slower but you can use
-        useful development tools. {learnMoreButton}
-      </Text>
-    );
-  } else {
-    return (
-      <Text style={styles.developmentModeText}>
-        You are not in development mode: your app will run at full speed.
-      </Text>
-    );
-  }
-}
-
-function handleLearnMorePress() {
-  WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/workflow/development-mode/'
-  );
-}
-
-function handleHelpPress() {
-  WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/workflow/up-and-running/#cant-see-your-changes'
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff"
   },
   developmentModeText: {
     marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
+    color: "rgba(0,0,0,0.4)",
     fontSize: 14,
     lineHeight: 19,
-    textAlign: 'center',
+    textAlign: "center"
   },
   contentContainer: {
-    paddingTop: 30,
+    paddingTop: 30
   },
   welcomeContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 20
   },
   welcomeImage: {
     width: 100,
     height: 80,
-    resizeMode: 'contain',
+    resizeMode: "contain",
     marginTop: 3,
-    marginLeft: -10,
+    marginLeft: -10
   },
   getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
+    alignItems: "center",
+    marginHorizontal: 50
   },
   homeScreenFilename: {
-    marginVertical: 7,
+    marginVertical: 7
   },
   codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
+    color: "rgba(96,100,109, 0.8)"
   },
   codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    backgroundColor: "rgba(0,0,0,0.05)",
     borderRadius: 3,
-    paddingHorizontal: 4,
+    paddingHorizontal: 4
   },
   getStartedText: {
     fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
+    color: "rgba(96,100,109, 1)",
     lineHeight: 24,
-    textAlign: 'center',
+    textAlign: "center"
   },
   tabBarInfoContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     ...Platform.select({
       ios: {
-        shadowColor: 'black',
+        shadowColor: "black",
         shadowOffset: { width: 0, height: -3 },
         shadowOpacity: 0.1,
-        shadowRadius: 3,
+        shadowRadius: 3
       },
       android: {
-        elevation: 20,
-      },
+        elevation: 20
+      }
     }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
+    alignItems: "center",
+    backgroundColor: "#fbfbfb",
+    paddingVertical: 20
   },
   tabBarInfoText: {
     fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
+    color: "rgba(96,100,109, 1)",
+    textAlign: "center"
   },
   navigationFilename: {
-    marginTop: 5,
+    marginTop: 5
   },
   helpContainer: {
     marginTop: 15,
-    alignItems: 'center',
+    alignItems: "center"
   },
   helpLink: {
-    paddingVertical: 15,
+    paddingVertical: 15
   },
   helpLinkText: {
     fontSize: 14,
-    color: '#2e78b7',
-  },
+    color: "#2e78b7"
+  }
 });
